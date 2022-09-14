@@ -26,17 +26,32 @@ public class AsyncDemo
     {
         StringBuilder result = new StringBuilder();
         result.AppendLine(this.RequestId + " : LevelOneTask - before LevelTwoTask - threadId =" + Thread.CurrentThread.ManagedThreadId);
-        result.AppendLine(await LevelTwoTask());
-        result.AppendLine(this.RequestId + " : LevelOneTask - after LevelTwoTask - threadId =" + Thread.CurrentThread.ManagedThreadId);
+        Task<string> levelTwoATask = LevelTwoATask();
+        result.AppendLine(this.RequestId + " : LevelOneTask - after LevelTwoATask initialised - threadId =" + Thread.CurrentThread.ManagedThreadId);
+        Task<string> levelTwoBTask = LevelTwoBTask();
+        result.AppendLine(this.RequestId + " : LevelOneTask - after LevelTwoBTask initialised - threadId =" + Thread.CurrentThread.ManagedThreadId);
+        result.AppendLine(await levelTwoATask);
+        result.AppendLine(this.RequestId + " : LevelOneTask - after LevelTwoATask completed - threadId =" + Thread.CurrentThread.ManagedThreadId);
+        result.AppendLine(await levelTwoBTask);
+        result.AppendLine(this.RequestId + " : LevelOneTask - after LevelTwoBTask completed - threadId =" + Thread.CurrentThread.ManagedThreadId);
         return result.ToString();
     }
 
-    private async Task<string> LevelTwoTask()
+    private async Task<string> LevelTwoATask()
     {
         StringBuilder result = new StringBuilder();
-        result.AppendLine(this.RequestId + " : LevelTwoTask - before delay - threadId =" + Thread.CurrentThread.ManagedThreadId);
+        result.AppendLine(this.RequestId + " : LevelTwoATask - before delay - threadId =" + Thread.CurrentThread.ManagedThreadId);
         await Task.Delay(TimeSpan.FromSeconds(5));
-        result.AppendLine(this.RequestId + " : LevelTwoTask - after delay - threadId =" + Thread.CurrentThread.ManagedThreadId);
+        result.AppendLine(this.RequestId + " : LevelTwoATask - after delay - threadId =" + Thread.CurrentThread.ManagedThreadId);
+        return result.ToString();
+    }
+
+    private async Task<string> LevelTwoBTask()
+    {
+        StringBuilder result = new StringBuilder();
+        result.AppendLine(this.RequestId + " : LevelTwoBTask - before delay - threadId =" + Thread.CurrentThread.ManagedThreadId);
+        await Task.Delay(TimeSpan.FromSeconds(5));
+        result.AppendLine(this.RequestId + " : LevelTwoBTask - after delay - threadId =" + Thread.CurrentThread.ManagedThreadId);
         return result.ToString();
     }
 }
